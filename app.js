@@ -28,15 +28,21 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser('1234-5678-9012-3344'));
+//app.use(cookieParser('1234-5678-9012-3344'));
 
-//d
+app.use(session({
+  name:'session-id',
+  secret:'1234-5678-9012-3344',
+  saveUninitialized:false,
+  resave:false,
+  store:new FileStore()
+}));
 
 function auth(req, res, next){
 
-  console.log(req.signedCookies);
+  console.log(req.session);
 
-  if(!req.signedCookies.user){
+  if(!req.session.user){
 
     var authHeader=req.headers.authorization;
 
@@ -52,7 +58,7 @@ function auth(req, res, next){
     var password = auth[1];
    
     if(username='admin'&&password=='password'){
-      res.cookie('user','admin',{signed:true});
+      req.session.user='admin';
       next(); // if matches pass to next middleware
     }
     else{
@@ -65,7 +71,7 @@ function auth(req, res, next){
 
   }
   else {
-    if(req.signedCookies.user=='admin'){
+    if(req.session.user=='admin'){
       next();
     }
     else{
