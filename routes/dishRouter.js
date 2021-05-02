@@ -21,7 +21,7 @@ dishRouter.route('/')
 
     Dishes.create(req.body)
     .then((dish)=>{
-        console.log('Dis Created',dish);
+        console.log('Dish Created',dish);
         res.statusCode = 200;
         res.setHeader('Content-Type','application/json');
         res.json(dish);

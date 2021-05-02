@@ -3,7 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
@@ -27,7 +28,57 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('1234-5678-9012-3344'));
+
+
+
+function auth(req, res, next){
+
+  console.log(req.signedCookies);
+
+  if(!req.signedCookies.user){
+
+    var authHeader=req.headers.authorization;
+
+    if(!authHeader){
+      var err = new Error('You are not authenticated');
+      res.setHeader('WWW-Authenticate','Basic');
+      err.status = 401;
+     return  next(err);
+    }
+   
+    var auth = new Buffer.from(authHeader.split(' ')[1],'base64').toString().split(':'); // [0] has the basic written in it
+    var username = auth[0];
+    var password = auth[1];
+   
+    if(username='admin'&&password=='password'){
+      res.cookie('user','admin',{signed:true});
+      next(); // if matches pass to next middleware
+    }
+    else{
+      var err = new Error('You are not authenticated');
+      res.setHeader('WWW-Authenticate','Basic');
+      err.status = 401;
+      next(err);
+  
+    }
+
+  }
+  else {
+    if(req.signedCookies.user=='admin'){
+      next();
+    }
+    else{
+      var err = new Error('You are not authenticated');
+      err.status = 401;
+      next(err);
+
+    }
+  }
+  
+}
+
+app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
