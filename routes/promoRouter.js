@@ -1,14 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const authenticate = require('../authenticate')
 const Promotions = require('../models/promotions')
 const promoRouter = express.Router();
 
 promoRouter.use(bodyParser.json());
 
 promoRouter.route('/')
-.get((req,res,next) => {
+.get(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Promotions.find({})
     .then((promotions)=> {
         res.statusCode = 200;
@@ -16,8 +23,15 @@ promoRouter.route('/')
         res.json(promotions);
     },(err)=>next(err))
     .catch((err)=>next(err));
-})
-.post((req,res,next) => {
+}})
+.post(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Promotions.create(req.body)
     .then((promotion)=>{
         console.log('Promotion created',promotion);
@@ -26,12 +40,19 @@ promoRouter.route('/')
         res.json(promotion);
     },(err)=>next(err))
     .catch((err)=>next(err));
-    })
-.put((req,res,next) => {
+    }})
+.put(authenticate.verifyUser,(req,res,next) => {
     res.statusCode = 404;
     res.end('PUT not supported');
 })
-.delete((req,res,next) => {
+.delete(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
    Promotions.remove({})
    .then((resp)=>{
     res.statusCode = 200;
@@ -40,10 +61,17 @@ promoRouter.route('/')
     
 },(err)=>next(err))
 .catch((err) => next(err));
-});
+}});
 
 promoRouter.route('/:promoId')
-.get((req,res,next) => {
+.get(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Promotions.findById(req.params.promoId)
     .then((promotion)=> {
         res.statusCode = 200;
@@ -51,12 +79,20 @@ promoRouter.route('/:promoId')
         res.json(promotion);
     },(err)=>next(err))
     .catch((err)=>next(err));
-})
-.post((req,res,next) => {
+}})
+.post(authenticate.verifyUser,(req,res,next) => {
+
     res.statusCode = 404;
     res.end('POST request not supported');
 })
-.put((req,res,next) => {
+.put(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Promotions.findByIdAndUpdate(req.params.promoId,{
         $set:req.body
     },{new:true})
@@ -66,8 +102,15 @@ promoRouter.route('/:promoId')
         res.json(promotion);
     },(err)=>next(err))
     .catch((err)=>next(err));
-})
-.delete((req,res,next) => {
+}})
+.delete(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
    Promotions.findByIdAndDelete(req.params.promoId)
    .then((resp)=>{
     res.statusCode = 200;
@@ -76,6 +119,6 @@ promoRouter.route('/:promoId')
     
 },(err)=>next(err))
 .catch((err) => next(err));
-});
+}});
 
 module.exports = promoRouter;

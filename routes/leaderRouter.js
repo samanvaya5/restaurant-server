@@ -1,14 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const authenticate = require('../authenticate');
 const leaderRouter = express.Router();
 const Leaders = require('../models/leaders');
 
 leaderRouter.use(bodyParser.json());
 
 leaderRouter.route('/')
-.get((req,res,next) => {
+.get(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Leaders.find({})
     .then((leaders) => {
         res.statusCode = 200;
@@ -17,8 +24,15 @@ leaderRouter.route('/')
     },(err)=>next(err))
      .catch((err) => next(err));
    
-})
-.post((req,res,next) => {
+}})
+.post(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Leaders.create(req.body)
     .then((leader)=>{
         console.log('Leader Created',leader);
@@ -28,12 +42,19 @@ leaderRouter.route('/')
     },(err)=>next(err))
     .catch((err) => next(err));
     
-})
-.put((req,res,next) => {
+}})
+.put(authenticate.verifyUser,(req,res,next) => {
     res.statusCode = 404;
     res.end("PUT not available");
 })
-.delete((req,res,next) => {
+.delete(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Leaders.remove({})
     .then((resp)=>{
         res.statusCode = 200;
@@ -42,10 +63,17 @@ leaderRouter.route('/')
         
     },(err)=>next(err))
     .catch((err) => next(err));
-});
-leaderRouter.route('/:leaderId')
-.get((req,res,next) => {
+}});
 
+leaderRouter.route('/:leaderId')
+.get(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Leaders.findById(req.params.leaderId)
     .then((leader)=>{
         res.statusCode = 200;
@@ -53,12 +81,20 @@ leaderRouter.route('/:leaderId')
         res.json(leader);
     },(err)=>next(err))
     .catch((err)=>next(err))
-})
-.post((req,res,next) => {
+}})
+.post(authenticate.verifyUser,(req,res,next) => {
+
     res.statusCode = 404;
     res.end("POST Request not available");
 })
-.put((req,res,next) => {
+.put(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Leaders.findByIdAndUpdate(req.params.leaderId,{
         $set:req.body
     },{new:true})
@@ -68,8 +104,15 @@ leaderRouter.route('/:leaderId')
         res.json(leader);
     },(err)=>next(err))
      .catch((err) => next(err));    
-})
-.delete((req,res,next) => {
+}})
+.delete(authenticate.verifyUser,(req,res,next) => {
+    if(authenticate.verifyAdmin(req.user)==false){
+        
+        err = new Error('Only Admins are allowed to access');
+        err.status = 404;
+        return next(err);
+    }
+    if(authenticate.verifyAdmin(req.user)==true){
     Leaders.findByIdAndRemove(req.params.leaderId)
     .then((resp)=>{
         res.statusCode = 200;
@@ -78,6 +121,6 @@ leaderRouter.route('/:leaderId')
         
     },(err)=>next(err))
     .catch((err) => next(err));
-});
+}});
 
 module.exports =leaderRouter;
