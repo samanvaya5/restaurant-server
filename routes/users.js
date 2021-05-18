@@ -4,12 +4,14 @@ var User = require('../models/user');
 const mongoose = require('mongoose');
 var passport = require('passport');
 var authenticate = require('../authenticate')
-
+const cors = require('./cors');
 var router = express.Router();
 
 router.use(bodyParser.json());
 /* GET users listing. */
-router.route('/').get(authenticate.verifyUser,(req, res, next) => {
+router.route('/')
+.options(cors.corsWithOptions,(req,res) => {res.sendStatus(200)})
+.get(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
   console.log("Admin Verifiication ");
   if(authenticate.verifyAdmin(req.user)===false){
     console.log("Not an Admin");    
@@ -37,7 +39,9 @@ if(authenticate.verifyAdmin(req.user)===true){
     },(err)=>next(err))
     .catch((err)=>next(err));
 });*/
-router.post('/signup',(req, res, next) => {
+router
+.options(cors.corsWithOptions,(req,res) => {res.sendStatus(200)})
+.post('/signup',cors.corsWithOptions,(req, res, next) => {
   User.register(new User({username:req.body.username}),
   req.body.password,(err,user)=>{
     if(err){

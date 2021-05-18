@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const authenticate = require('../authenticate');
 const leaderRouter = express.Router();
 const Leaders = require('../models/leaders');
+const cors = require('./cors');
 
 leaderRouter.use(bodyParser.json());
 
 leaderRouter.route('/')
-.get(authenticate.verifyUser,(req,res,next) => {
+.options(cors.corsWithOptions,(req,res) => {res.sendStatus(200)})
+.get(cors.cors,authenticate.verifyUser,(req,res,next) => {
     if(authenticate.verifyAdmin(req.user)==false){
         
         err = new Error('Only Admins are allowed to access');
@@ -25,7 +27,7 @@ leaderRouter.route('/')
      .catch((err) => next(err));
    
 }})
-.post(authenticate.verifyUser,(req,res,next) => {
+.post(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
     if(authenticate.verifyAdmin(req.user)==false){
         
         err = new Error('Only Admins are allowed to access');
@@ -43,11 +45,11 @@ leaderRouter.route('/')
     .catch((err) => next(err));
     
 }})
-.put(authenticate.verifyUser,(req,res,next) => {
+.put(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
     res.statusCode = 404;
     res.end("PUT not available");
 })
-.delete(authenticate.verifyUser,(req,res,next) => {
+.delete(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
     if(authenticate.verifyAdmin(req.user)==false){
         
         err = new Error('Only Admins are allowed to access');
@@ -66,7 +68,8 @@ leaderRouter.route('/')
 }});
 
 leaderRouter.route('/:leaderId')
-.get(authenticate.verifyUser,(req,res,next) => {
+.options(cors.corsWithOptions,(req,res) => {res.sendStatus(200)})
+.get(cors.cors,authenticate.verifyUser,(req,res,next) => {
     if(authenticate.verifyAdmin(req.user)==false){
         
         err = new Error('Only Admins are allowed to access');
@@ -82,12 +85,12 @@ leaderRouter.route('/:leaderId')
     },(err)=>next(err))
     .catch((err)=>next(err))
 }})
-.post(authenticate.verifyUser,(req,res,next) => {
+.post(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
 
     res.statusCode = 404;
     res.end("POST Request not available");
 })
-.put(authenticate.verifyUser,(req,res,next) => {
+.put(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
     if(authenticate.verifyAdmin(req.user)==false){
         
         err = new Error('Only Admins are allowed to access');
@@ -105,7 +108,7 @@ leaderRouter.route('/:leaderId')
     },(err)=>next(err))
      .catch((err) => next(err));    
 }})
-.delete(authenticate.verifyUser,(req,res,next) => {
+.delete(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
     if(authenticate.verifyAdmin(req.user)==false){
         
         err = new Error('Only Admins are allowed to access');
