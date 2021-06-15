@@ -1,7 +1,124 @@
-<html>
-    <title>This is about.html</title>
-    <body></body>
-        <h1>About </h1>
-        <p>Content of about.html</p>
-    </body>
-</html>
+<h1 id="restaurants-server">RESTAURANTS SERVER</h1>
+<p>Backend services developed in NodeJS</p>
+<p>An Express based server.</p>
+<h2 id="authentication">AUTHENTICATION</h2>
+<p>Username-Password based signup with the help of passport based local strategy</p>
+<p>There after token based authentication for every request.<br>JSON Web Token (JWT) are being issued on each login with a expiration time.</p>
+<p>OAuth 2 based Facebook Authentication setup is also provided.<br>A initial signup/login from Facebook shall provide the user details and
+thereafter a JWT shall be issued for subsequent requests.</p>
+<h2 id="security">Security</h2>
+<p>HTTPS based server any HTTP request shall be redirected to HTTPS.<br>Currently using a self signed certificate.<br>Cross Origin are allowed only on selected types of request rest all are restricted</p>
+<h1 id="admin">Admin</h1>
+<p>An account marked as admin shall have special privileges.<br>For security purpose manual marking of admin in database is being used<br>Only an admin can </p>
+<ul>
+<li>Create a dish </li>
+<li>Create promotions </li>
+<li>Access all the users list</li>
+<li>Update a dish , etc.</li>
+</ul>
+<h1 id="database">Database</h1>
+<p>MongoDB is being used to store all the data.</p>
+<h2 id="schema">Schema</h2>
+<p><strong>dishes</strong></p>
+<ul>
+<li>Name</li>
+<li>Description</li>
+<li>Image</li>
+<li>Category</li>
+<li>Label</li>
+<li>Price</li>
+<li>Featured</li>
+<li>Comments [Comment Schema]  </li>
+</ul>
+<p><strong>Comments</strong></p>
+<ul>
+<li>Rating </li>
+<li>Comment</li>
+<li>Author</li>
+</ul>
+<p><strong>User</strong></p>
+<ul>
+<li>First-name</li>
+<li>Last-name</li>
+<li>admin</li>
+<li>username</li>
+<li>hash</li>
+<li>salt</li>
+<li><strong>Promotion</strong></li>
+<li>Name</li>
+<li>Description</li>
+<li>Image</li>
+<li>Category</li>
+<li>Label</li>
+<li>Price</li>
+<li>Featured</li>
+</ul>
+<p><strong>Leader</strong></p>
+<ul>
+<li>Name</li>
+<li>Image</li>
+<li>Designation</li>
+<li>Abbr</li>
+<li>Description</li>
+<li>Featured</li>
+</ul>
+<h2 id="api-routes">API ROUTES</h2>
+<h3 id="dishes">DISHES</h3>
+<p> <strong>route(&#39;/dishes&#39;)</strong></p>
+<ul>
+<li>GET : Read all the dishes available. </li>
+<li>POST : Create a new dish.</li>
+<li>DELETE : Delete all the dishes    </li>
+</ul>
+<p><strong>route(&#39;/dishes/:dishId&#39;)</strong></p>
+<ul>
+<li>GET : Read the dish with given dishId. </li>
+<li>PUT : Update a particular dish.</li>
+<li>DELETE : Delete a dish.</li>
+</ul>
+<p><strong>route(&#39;/dishes/:dishId/comments&#39;)</strong></p>
+<ul>
+<li>GET : Read the comments of a dish with given dishId. </li>
+<li>POST : Create new comment for the dish.</li>
+<li>DELETE : Delete all comments.</li>
+</ul>
+<p><strong>route(&#39;/dishes/:dishId/comments/:commentId&#39;)</strong></p>
+<ul>
+<li>GET : Read a comment with given commentId of the dish with given dishId. </li>
+<li>PUT : Update a particular comment.</li>
+<li>DELETE : Delete a comment.<h3 id="promotions">PROMOTIONS</h3>
+<strong>route(&#39;/promotions&#39;)</strong></li>
+<li>GET : Read all the promotions available. </li>
+<li>POST : Create a new promotion.</li>
+<li>DELETE : Delete all the promotions.   </li>
+</ul>
+<p><strong>route(&#39;/promotions/:promotionId&#39;)</strong></p>
+<ul>
+<li>GET : Read the promotion with given promotionId. </li>
+<li>PUT : Update a particular promotion.</li>
+<li>DELETE : Delete a promotion.<h3 id="leaders">Leaders</h3>
+<strong>route(&#39;/leaders&#39;)</strong></li>
+<li>GET : Read all the leaders available. </li>
+<li>POST : Create a new leader.</li>
+<li>DELETE : Delete all the leaders.   </li>
+</ul>
+<p><strong>route(&#39;/leaders/:leaderId&#39;)</strong></p>
+<ul>
+<li>GET : Read a leader with given leaderId. </li>
+<li>PUT : Update a particular leader.</li>
+<li>DELETE : Delete a leader.<h3 id="users">Users</h3>
+<strong>route(&#39;/users/&#39;)</strong></li>
+<li>GET : Read all the users available. </li>
+</ul>
+<p><strong>route(&#39;/users/signup&#39;)</strong></p>
+<ul>
+<li>POST : Create a new user with username password.</li>
+</ul>
+<p><strong>route(&#39;/users/login&#39;)</strong></p>
+<ul>
+<li>POST : Login a user with username-password and provide a JWT.</li>
+</ul>
+<p><strong>route(&#39;/users/facebook/token&#39;)</strong></p>
+<ul>
+<li>GET : Login a user with Facebook and provide a JWT.</li>
+</ul>

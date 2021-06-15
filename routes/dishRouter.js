@@ -29,7 +29,7 @@ dishRouter.route('/')
         return next(err);
     }
     if(authenticate.verifyAdmin(req.user)==true){
-    Dishes.create(req.body)
+    Dishes.insertMany(req.body)
     .then((dish)=>{
 
         console.log('Dish Created',dish);

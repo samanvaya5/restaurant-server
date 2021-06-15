@@ -20,7 +20,7 @@ var commentSchema = new Schema({
 },{
     timestamps: true
 });
-var dishSchema = new Schema({
+var DishSchema = new Schema({
     name:{
         type:String,
         required:true,
@@ -56,5 +56,5 @@ var dishSchema = new Schema({
     timestamps:true
 });// 2 timestamps created at  and updated at
 
-var Dishes = mongoose.model('Dish',dishSchema);
+var Dishes = mongoose.model('Dish',DishSchema);
 module.exports= Dishes;
