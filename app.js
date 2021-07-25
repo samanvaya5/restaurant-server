@@ -8,7 +8,7 @@ var FileStore = require('session-file-store')(session);
 var passport = require('passport');
 
 var config = require('./config')
-
+var fbLoginRouter = require('./routes/fbLoginRouter');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
@@ -47,6 +47,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 app.use('/', indexRouter);
+app.use('/fb', fbLoginRouter);
 app.use('/users', usersRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
